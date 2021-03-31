@@ -102,3 +102,7 @@ dist
 
 # TernJS port file
 .tern-port
+backend/db.json
+backend/db.sqlite
+backend/.metals/metals.h2.db
+backend/.vscode/settings.json
