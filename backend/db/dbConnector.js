@@ -74,7 +74,6 @@ async function addSimpleColumn(table, name, type) {
 }
 
 function init() {
-  const path = require("path");
   const knex = require("knex");
   console.log("init knex");
   sqldb = knex({
@@ -86,6 +85,27 @@ function init() {
     useNullAsDefault: true,
   });
   console.log("knex complete");
+}
+
+async function simpleSelect(table, columns, filters) {
+  return await sqldb(table).select(columns).where(filters);
+}
+
+function Join(table, columns, filters, joins) {
+  let joinString = "";
+  for (const j of joins) {
+    joinString +=
+      " " + j.type + " join " + j.table + " on " + j.field1 + "=" + j.field2;
+  }
+  return sqldb(table).select(columns).joinRaw(joinString).where(filters);
+}
+
+function insert(table, data) {
+  return sqldb(table).insert(data);
+}
+
+function update(table, data, id) {
+  return sqldb(table).update(data).where(id);
 }
 
 module.exports = fastifyPlugin(dbConnector);
