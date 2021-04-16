@@ -17,8 +17,25 @@ function addCalls(fastify) {
     );
   });
 
-  fastify.post("/data/get", tokenCheck, async (request, reply) => {
+  fastify.post("/data/delete", tokenCheck, async (request, reply) => {
     return await fastify.dropTable(request.body);
+  });
+
+  fastify.post("/data/get", tokenCheck, async (request, reply) => {
+    if (request.body.joins) {
+      return await fastify.simpleSelect(
+        request.body.table,
+        request.body.columns,
+        request.body.filters
+      );
+    } else {
+      return await fastify.simpleSelect(
+        request.body.table,
+        request.body.columns,
+        request.body.filters,
+        request.body.joins
+      );
+    }
   });
 }
 exports.init = init;

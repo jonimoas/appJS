@@ -8,6 +8,10 @@ async function dbConnector(fastify, options) {
   fastify.decorate("createTable", createTable);
   fastify.decorate("alterTable", alterTable);
   fastify.decorate("dropTable", dropTable);
+  fastify.decorate("simpleSelect", simpleSelect);
+  fastify.decorate("join", join);
+  fastify.decorate("insert", insert);
+  fastify.decorate("update", update);
 }
 
 async function createTable(options) {
@@ -91,7 +95,7 @@ async function simpleSelect(table, columns, filters) {
   return await sqldb(table).select(columns).where(filters);
 }
 
-function Join(table, columns, filters, joins) {
+function join(table, columns, filters, joins) {
   let joinString = "";
   for (const j of joins) {
     joinString +=
@@ -105,7 +109,9 @@ function insert(table, data) {
 }
 
 function update(table, data, id) {
-  return sqldb(table).update(data).where(id);
+  return sqldb(table)
+    .update(Object.assign(data, { updated_at: new Date() }))
+    .where({ id: id });
 }
 
 module.exports = fastifyPlugin(dbConnector);
