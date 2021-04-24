@@ -92,16 +92,26 @@ function init() {
 }
 
 async function simpleSelect(table, columns, filters) {
-  return await sqldb(table).select(columns).where(filters);
+  for (const f of filters) {
+    filterString += " " + f.field + " " + f.operator + " " + f.value + " and";
+  }
+  return await sqldb(table).select(columns).whereRaw(filterString.slice(0, -3));
 }
 
 function join(table, columns, filters, joins) {
   let joinString = "";
+  let filterString = "";
   for (const j of joins) {
     joinString +=
       " " + j.type + " join " + j.table + " on " + j.field1 + "=" + j.field2;
   }
-  return sqldb(table).select(columns).joinRaw(joinString).where(filters);
+  for (const f of filters) {
+    filterString += " " + f.field + " " + f.operator + " " + f.value + " and";
+  }
+  return sqldb(table)
+    .select(columns)
+    .joinRaw(joinString)
+    .whereRaw(filterString.slice(0, -3));
 }
 
 function insert(table, data) {

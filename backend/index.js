@@ -6,7 +6,13 @@ fastify.register(require("./db/dbConnector"));
 fastify.register(require("./db/jsonConnector"));
 fastify.register(require("./helpers/auth"));
 const entities = require("./calls/entities");
-entities.init(fastify);
+const data = require("./calls/data");
+const misc = require("./calls/misc");
+const middleware = require("./helpers/middleware");
+middleware.init(fastify);
+entities.init(fastify, middleware);
+data.init(fastify, middleware);
+misc.init(fastify, middleware);
 
 const start = async () => {
   try {
