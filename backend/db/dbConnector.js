@@ -19,7 +19,7 @@ async function createTable(options) {
     .createTable(options.name, async function (table) {
       table.increments();
       table.timestamps(true, true);
-      table.boolean("deleted");
+      table.boolean("deleted").defaultTo(false);
       for (const c of options.columns) {
         if (c.foreign) {
           await table.integer(c.name).references("id").inTable(c.foreignTable);
@@ -91,14 +91,37 @@ function init() {
   console.log("knex complete");
 }
 
-async function simpleSelect(table, columns, filters) {
+async function simpleSelect(
+  table,
+  columns = "*",
+  filters = [],
+  limit = 10,
+  offset = 0,
+  orderField = "id",
+  order = "desc"
+) {
+  let filterString = "";
   for (const f of filters) {
     filterString += " " + f.field + " " + f.operator + " " + f.value + " and";
   }
-  return await sqldb(table).select(columns).whereRaw(filterString.slice(0, -3));
+  return await sqldb(table)
+    .select(columns)
+    .whereRaw(filterString == "" ? "id>=1" : filterString.slice(0, -3))
+    .limit(limit)
+    .offset(offset)
+    .orderBy(orderField, order);
 }
 
-function join(table, columns, filters, joins) {
+function join(
+  table,
+  columns = "*",
+  filters = [],
+  joins = [],
+  limit = 10,
+  offset = 0,
+  orderField = "id",
+  order = "desc"
+) {
   let joinString = "";
   let filterString = "";
   for (const j of joins) {
@@ -111,7 +134,10 @@ function join(table, columns, filters, joins) {
   return sqldb(table)
     .select(columns)
     .joinRaw(joinString)
-    .whereRaw(filterString.slice(0, -3));
+    .whereRaw(filterString == "" ? "id>=1" : filterString.slice(0, -3))
+    .limit(limit)
+    .offset(offset)
+    .orderBy(orderField, order);
 }
 
 function insert(table, data) {

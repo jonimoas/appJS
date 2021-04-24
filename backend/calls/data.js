@@ -37,13 +37,21 @@ function addCalls(fastify) {
         request.body.table,
         request.body.columns,
         request.body.filters,
-        request.body.joins
+        request.body.joins,
+        request.body.limit,
+        request.body.offset,
+        request.body.orderField,
+        request.body.order
       );
     } else {
       return await fastify.simpleSelect(
         request.body.table,
         request.body.columns,
-        request.body.filters
+        request.body.filters,
+        request.body.limit,
+        request.body.offset,
+        request.body.orderField,
+        request.body.order
       );
     }
   });
