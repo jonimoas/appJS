@@ -12,6 +12,9 @@ async function jsonConnector(fastify, options) {
   fastify.decorate("createEntity", createEntity);
   fastify.decorate("dropEntity", dropEntity);
   fastify.decorate("alterEntity", alterEntity);
+  fastify.decorate("add", add);
+  fastify.decorate("edit", edit);
+  fastify.decorate("remove", remove);
 }
 
 function init() {
@@ -111,5 +114,17 @@ function alterEntity(body) {
 
 function dropEntity(body) {
   return jsondb.get("entities").remove({ name: body.name }).write();
+}
+
+function add(table, body) {
+  return jsondb.get(table).push(body).write();
+}
+
+function edit(table, body) {
+  return jsondb.get(table).find({ name: body.name }).assign(body).write();
+}
+
+function remove(table, body) {
+  return jsondb.get(table).remove({ name: body.name }).write();
 }
 module.exports = fastifyPlugin(jsonConnector);
