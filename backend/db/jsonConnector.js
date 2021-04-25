@@ -11,6 +11,7 @@ async function jsonConnector(fastify, options) {
   fastify.decorate("getTable", getTable);
   fastify.decorate("createEntity", createEntity);
   fastify.decorate("dropEntity", dropEntity);
+  fastify.decorate("alterEntity", alterEntity);
 }
 
 function init() {
@@ -79,11 +80,36 @@ function getTable(name) {
   return jsondb.get("tables").find({ name: "notFound" }).value();
 }
 
-function createEntity(name) {
-  return jsondb.get("entities").push({ name: name }).write();
+function createEntity(body) {
+  return jsondb
+    .get("entities")
+    .push({ name: body.name, schema: body.columns })
+    .write();
 }
 
-function dropEntity(name) {
-  return jsondb.get("entities").remove({ name: name }).write();
+function alterEntity(body) {
+  let entity = jsondb.get("entities").find({ name: body.name }).value();
+  let schema = entity.schema;
+  if (body.action == "drop") {
+    schema = schema.filter((r) => r.name != body.column);
+  } else {
+    schema.push({
+      name: body.name,
+      type: body.type,
+      foreign: body.foreign,
+      foreignTable: body.foreignTable,
+    });
+  }
+  return jsondb
+    .get("entities")
+    .find({ name: body.name })
+    .assign({
+      schema: schema,
+    })
+    .write();
+}
+
+function dropEntity(body) {
+  return jsondb.get("entities").remove({ name: body.name }).write();
 }
 module.exports = fastifyPlugin(jsonConnector);

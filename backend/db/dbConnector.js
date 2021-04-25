@@ -1,5 +1,6 @@
 var sqldb;
 
+const { default: fastify } = require("fastify");
 const fastifyPlugin = require("fastify-plugin");
 
 async function dbConnector(fastify, options) {
@@ -34,6 +35,7 @@ async function createTable(options) {
 }
 
 async function alterTable(options) {
+  fastify.alterEntity(options);
   switch (options.action) {
     case "drop":
       return await sqldb.schema.table(options.table, async (r) => {
