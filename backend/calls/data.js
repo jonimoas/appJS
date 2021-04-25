@@ -27,7 +27,11 @@ function addCalls(fastify) {
     "/data/delete",
     middleware.tokenCheck,
     async (request, reply) => {
-      return await fastify.dropTable(request.body);
+      return await fastify.update(
+        request.body.table,
+        { deleted: true },
+        request.body.id
+      );
     }
   );
 
