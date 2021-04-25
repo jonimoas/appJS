@@ -9,6 +9,8 @@ async function jsonConnector(fastify, options) {
   fastify.decorate("checkUser", checkUser);
   fastify.decorate("getForm", getForm);
   fastify.decorate("getTable", getTable);
+  fastify.decorate("createEntity", createEntity);
+  fastify.decorate("dropEntity", dropEntity);
 }
 
 function init() {
@@ -44,6 +46,7 @@ function init() {
           level: 0,
         },
       ],
+      entities: [],
     })
     .write();
 }
@@ -76,4 +79,11 @@ function getTable(name) {
   return jsondb.get("tables").find({ name: "notFound" }).value();
 }
 
+function createEntity(name) {
+  return jsondb.get("entities").push({ name: name }).write();
+}
+
+function dropEntity(name) {
+  return jsondb.get("entities").remove({ name: name }).write();
+}
 module.exports = fastifyPlugin(jsonConnector);

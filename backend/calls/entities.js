@@ -36,6 +36,7 @@ function addCalls(fastify) {
     "/entity/create",
     middleware.tokenCheck,
     async (request, reply) => {
+      await fastify.createEntity(request.body.name);
       return await fastify.createTable(request.body);
     }
   );
@@ -52,6 +53,7 @@ function addCalls(fastify) {
     "/entity/drop",
     middleware.tokenCheck,
     async (request, reply) => {
+      await fastify.dropEntity(request.body.name);
       return await fastify.dropTable(request.body);
     }
   );
