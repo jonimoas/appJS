@@ -15,24 +15,31 @@
               <vc-list-item @click="logout">Logout</vc-list-item></vc-list
             >
           </vc-collapsible-item>
-          <vc-collapsible-item label="Admin Options" disabled>
-            <vc-lorem-ipsum :repeats="1" />
+          <vc-collapsible-item label="Admin Options"
+            ><vc-list>
+              <vc-list-item @click="editor">Editor</vc-list-item></vc-list
+            >
           </vc-collapsible-item>
         </vc-collapsible>
       </vc-col>
-      <vc-col :span="24 - colSpan" sm12 xs24> </vc-col>
+      <vc-col :span="24 - colSpan" sm12 xs24
+        ><component v-bind:is="compo"></component>
+      </vc-col>
     </vc-layout>
   </div>
 </template>
 
 <script>
+import Editor from "./Editor.vue";
 export default {
   data() {
     return {
       colSpan: 4,
-      sizeText: ">>"
+      sizeText: ">>",
+      compo: "",
     };
   },
+  components: { Editor },
   mounted() {},
   methods: {
     changeSize: function() {
@@ -47,10 +54,13 @@ export default {
     logout: async function() {
       this.$store.commit("logout");
       this.$router.replace({
-        name: "Login"
+        name: "Login",
       });
-    }
-  }
+    },
+    editor: function() {
+      this.compo = "Editor";
+    },
+  },
 };
 </script>
 

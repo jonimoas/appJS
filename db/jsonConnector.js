@@ -50,14 +50,17 @@ function init() {
           level: 0,
         },
       ],
-      vueComponents: [{}],
+      vueComponents: [],
       entities: [],
     })
     .write();
 }
 
 function checkUser(username, password) {
-  let user = jsondb.get("users").find({ username: username }).value();
+  let user = jsondb
+    .get("users")
+    .find({ username: username })
+    .value();
   console.log(user);
   if (user == undefined) {
     return false;
@@ -69,19 +72,31 @@ function checkUser(username, password) {
 }
 
 function getForm(name) {
-  let form = jsondb.get("forms").find({ name: name }).value();
+  let form = jsondb
+    .get("forms")
+    .find({ name: name })
+    .value();
   if (form) {
     return form;
   }
-  return jsondb.get("forms").find({ name: "notFound" }).value();
+  return jsondb
+    .get("forms")
+    .find({ name: "notFound" })
+    .value();
 }
 
 function getTable(name) {
-  let table = jsondb.get("tables").find({ name: name }).value();
+  let table = jsondb
+    .get("tables")
+    .find({ name: name })
+    .value();
   if (table) {
     return table;
   }
-  return jsondb.get("tables").find({ name: "notFound" }).value();
+  return jsondb
+    .get("tables")
+    .find({ name: "notFound" })
+    .value();
 }
 
 function createEntity(body) {
@@ -92,7 +107,10 @@ function createEntity(body) {
 }
 
 function alterEntity(body) {
-  let entity = jsondb.get("entities").find({ name: body.name }).value();
+  let entity = jsondb
+    .get("entities")
+    .find({ name: body.name })
+    .value();
   let schema = entity.schema;
   if (body.action == "drop") {
     schema = schema.filter((r) => r.name != body.column);
@@ -114,18 +132,31 @@ function alterEntity(body) {
 }
 
 function dropEntity(body) {
-  return jsondb.get("entities").remove({ name: body.name }).write();
+  return jsondb
+    .get("entities")
+    .remove({ name: body.name })
+    .write();
 }
 
 function add(table, body) {
-  return jsondb.get(table).push(body).write();
+  return jsondb
+    .get(table)
+    .push(body)
+    .write();
 }
 
 function edit(table, body) {
-  return jsondb.get(table).find({ name: body.name }).assign(body).write();
+  return jsondb
+    .get(table)
+    .find({ name: body.name })
+    .assign(body)
+    .write();
 }
 
 function remove(table, body) {
-  return jsondb.get(table).remove({ name: body.name }).write();
+  return jsondb
+    .get(table)
+    .remove({ name: body.name })
+    .write();
 }
 module.exports = fastifyPlugin(jsonConnector);

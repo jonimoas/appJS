@@ -2,8 +2,8 @@ const fastify = require("fastify")({
   logger: true,
 });
 const exec = require("child_process").exec;
+const fs = require("fs");
 const path = require("path");
-child = exec("npm run build").stderr.pipe(process.stderr);
 fastify.register(require("./db/dbConnector"));
 fastify.register(require("./db/jsonConnector"));
 fastify.register(require("./helpers/auth"));
@@ -22,7 +22,21 @@ middleware.init(fastify);
 entities.init(fastify, middleware);
 data.init(fastify, middleware);
 misc.init(fastify, middleware);
-
+function buildVue() {
+  let routes = [];
+  fs.readdirSync("./src/ext").forEach((file) => {
+    if (file.indexOf(".vue") > 0) {
+      routes.push({
+        name: file.split(".")[0],
+        file: file,
+      });
+    }
+  });
+  console.log(routes);
+  fs.writeFileSync("./routes.json", JSON.stringify(routes));
+  child = exec("npm run build").stderr.pipe(process.stderr);
+}
+buildVue();
 const start = async () => {
   try {
     await fastify.listen(8000);
