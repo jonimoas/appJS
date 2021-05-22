@@ -106,3 +106,5 @@ backend/db.json
 backend/db.sqlite
 backend/.metals/metals.h2.db
 backend/.vscode/settings.json
+db.json
+package-lock.json
