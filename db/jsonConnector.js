@@ -15,6 +15,7 @@ async function jsonConnector(fastify, options) {
   fastify.decorate("add", add);
   fastify.decorate("edit", edit);
   fastify.decorate("remove", remove);
+  fastify.decorate("getAll", getAll);
 }
 
 function init() {
@@ -158,5 +159,9 @@ function remove(table, body) {
     .get(table)
     .remove({ name: body.name })
     .write();
+}
+
+function getAll(table) {
+  return jsondb.get(table).value();
 }
 module.exports = fastifyPlugin(jsonConnector);

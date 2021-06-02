@@ -25,7 +25,7 @@ export default {
   data() {
     return {
       user: "",
-      password: ""
+      password: "",
     };
   },
   methods: {
@@ -39,16 +39,16 @@ export default {
       let response = await fetch("http://localhost:8000/auth/login", {
         method: "POST",
         headers: {
-          "Content-type": "application/json; charset=UTF-8"
+          "Content-type": "application/json; charset=UTF-8",
         },
-        body: JSON.stringify({ username: this.user, password: this.password })
+        body: JSON.stringify({ username: this.user, password: this.password }),
       });
       response = await response.text();
       console.log(response);
-      this.$store.commit("session", response.session);
+      this.$store.commit("session", response);
       this.$router.replace({ name: "db" });
-    }
-  }
+    },
+  },
 };
 </script>
 <style></style>

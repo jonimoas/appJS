@@ -9,7 +9,7 @@ fastify.register(require("./db/jsonConnector"));
 fastify.register(require("./helpers/auth"));
 fastify.register(require("fastify-cors"), (instance) => (req, callback) => {
   let corsOptions = { origin: true };
-  callback(null, corsOptions); // callback expects two parameters: error and options
+  callback(null, corsOptions);
 });
 fastify.register(require("fastify-static"), {
   root: path.join(__dirname, "dist"),

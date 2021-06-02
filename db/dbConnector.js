@@ -17,15 +17,18 @@ async function dbConnector(fastify, options) {
 
 async function createTable(options) {
   return sqldb.schema
-    .createTable(options.name, async function (table) {
+    .createTable(options.name, async function(table) {
       table.increments();
       table.timestamps(true, true);
       table.boolean("deleted").defaultTo(false);
       for (const c of options.columns) {
         if (c.foreign) {
-          await table.integer(c.name).references("id").inTable(c.foreignTable);
+          await table
+            .integer(c.name)
+            .references("id")
+            .inTable(c.foreignTable);
         } else {
-          await addSimpleColumn(table, c.name, c.type);
+          addSimpleColumn(table, c.name, c.type);
         }
       }
     })
@@ -34,19 +37,19 @@ async function createTable(options) {
     });
 }
 
-async function alterTable(options) {
+function alterTable(options) {
   fastify.alterEntity(options);
   switch (options.action) {
     case "drop":
-      return await sqldb.schema.table(options.table, async (r) => {
-        return await r.dropColumn(options.column);
+      return sqldb.schema.table(options.table, async (r) => {
+        return r.dropColumn(options.column);
       });
     case "insert":
       if (options.foreign) {
         return (
-          await sqldb.schema.table(options.table),
+          sqldb.schema.table(options.table),
           async (r) => {
-            return await r
+            return r
               .integer(options.name)
               .references("id")
               .inTable(options.foreignTable);
@@ -54,7 +57,7 @@ async function alterTable(options) {
         );
       } else {
         return sqldb.schema.table(options.table, async (r) => {
-          return await addSimpleColumn(r, options.name, options.type);
+          return addSimpleColumn(r, options.name, options.type);
         });
       }
   }
@@ -66,16 +69,16 @@ function dropTable(options) {
   });
 }
 
-async function addSimpleColumn(table, name, type) {
+function addSimpleColumn(table, name, type) {
   switch (type) {
     case "integer":
-      return await table.integer(name);
+      return table.integer(name);
     case "decimal":
-      return await table.decimal(name);
+      return table.decimal(name);
     case "string":
-      return await table.string(name);
+      return table.string(name);
     case "bool":
-      return await table.boolean(name);
+      return table.boolean(name);
   }
 }
 

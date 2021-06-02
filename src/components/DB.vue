@@ -1,12 +1,18 @@
 <template>
   <div>
+    <vc-toolbar>
+      <vc-toolbar-icon-left icon="menu" @click="changeSize" />
+      <vc-toolbar-title>App</vc-toolbar-title>
+      <vc-toolbar-controls-right> </vc-toolbar-controls-right>
+    </vc-toolbar>
     <vc-layout style="padding: 20px">
       <vc-col
-        :span="colSpan"
+        :span="colSpan == 0 ? 1 : colSpan"
         sm12
         xs24
         align="center"
-        style="border-style: solid; padding: 5px"
+        style="padding: 5px;"
+        v-if="sideBar"
       >
         <vc-collapsible name="collapsible-3" :multiple="false">
           <vc-collapsible-item label="User Options">
@@ -22,7 +28,7 @@
           </vc-collapsible-item>
         </vc-collapsible>
       </vc-col>
-      <vc-col :span="24 - colSpan" sm12 xs24
+      <vc-col :span="24 - colSpan" sm12 xs24 style="padding: 5px;"
         ><component v-bind:is="compo"></component>
       </vc-col>
     </vc-layout>
@@ -34,20 +40,23 @@ import Editor from "./Editor.vue";
 export default {
   data() {
     return {
-      colSpan: 4,
+      colSpan: 0,
       sizeText: ">>",
       compo: "",
+      sideBar: false,
     };
   },
   components: { Editor },
   mounted() {},
   methods: {
     changeSize: function() {
-      if (this.colSpan == 4) {
-        this.colSpan = 12;
+      if (this.colSpan == 0) {
+        this.sideBar = true;
+        this.colSpan = 6;
         this.sizeText = "<<";
       } else {
-        this.colSpan = 4;
+        this.colSpan = 0;
+        this.sideBar = false;
         this.sizeText = ">>";
       }
     },
@@ -65,12 +74,6 @@ export default {
 </script>
 
 <style>
-td,
-th {
-  border-style: solid;
-  border-width: 1px;
-}
-
 .vc-select-item-selected {
   width: 100%;
 }
